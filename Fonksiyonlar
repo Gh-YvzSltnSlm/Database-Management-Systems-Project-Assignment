@@ -1,0 +1,125 @@
+-- CREATE FUNCTION "after_delete_bilet_trigger()" --------------
+CREATE OR REPLACE FUNCTION "MuzeYonetimi".after_delete_bilet_trigger()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+  ziyaret_no INTEGER;
+BEGIN
+  -- Belirli bir biletin ID'sini al
+  ziyaret_no := OLD."fk_Bilet_no";
+
+  -- İlgili ziyareti silebilirsiniz veya başka işlemleri de ekleyebilirsiniz
+  DELETE FROM "MuzeYonetimi"."Ziyaret" WHERE "Ziyaret_no" = ziyaret_no;
+
+  RETURN OLD;
+END;
+$function$;
+-- -------------------------------------------------------------
+
+
+-- CREATE FUNCTION "after_insert_sanat_eseri_eser_turu_trigger()" 
+CREATE OR REPLACE FUNCTION "MuzeYonetimi".after_insert_sanat_eseri_eser_turu_trigger()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+  eser_id INTEGER;
+  eser_adi VARCHAR(255);
+  eser_malzemesi VARCHAR(255);
+  eser_durumu VARCHAR(255);
+  eser_olusturma_tarihi DATE;
+  eser_boyutlari NUMERIC(100,0);
+BEGIN
+  eser_id := NEW."Eser_ıd";
+  eser_adi := NEW."Eser_adi";
+  eser_malzemesi := NEW."Eser_malzemesi";
+  eser_durumu := NEW."Eser_durum";
+  eser_olusturma_tarihi := NEW."Eser_olusturma_tarihi";
+  eser_boyutlari := NEW."Eser_boyutlari";
+
+  -- Eğer Eser_ıd tabloda zaten varsa, ekleme işlemi yapma
+  IF NOT EXISTS (SELECT 1 FROM "MuzeYonetimi"."SanatEserleri" WHERE "Eser_ıd" = eser_id) THEN
+    INSERT INTO "MuzeYonetimi"."SanatEserleri" ("Eser_ıd", "Eser_adi", "Eser_malzemesi", "Eser_durum", "Eser_olusturma_tarihi", "Eser_boyutlari")
+    VALUES (eser_id, eser_adi, eser_malzemesi, eser_durumu, eser_olusturma_tarihi, eser_boyutlari);
+  END IF;
+
+  RETURN NEW;
+END;
+$function$;
+-- -------------------------------------------------------------
+
+
+-- CREATE FUNCTION "after_insert_ziyaretci()" ------------------
+CREATE OR REPLACE FUNCTION "MuzeYonetimi".after_insert_ziyaretci()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+  yeni_ziyaret_no INTEGER;
+BEGIN
+  -- Sıradaki ziyaret numarasını alın
+  SELECT NEXTVAL('"MuzeYonetimi"."ziyaret_no_seq"') INTO yeni_ziyaret_no;
+
+  -- Yeni ziyareti ekleyin
+  INSERT INTO "MuzeYonetimi"."Ziyaret" ("Ziyaret_no", "Ziyaret_saati", "Ziyaret_tarihi")
+  VALUES (yeni_ziyaret_no, CURRENT_TIME, CURRENT_DATE);
+
+  RETURN NEW;
+END;
+$function$;
+-- -------------------------------------------------------------
+
+-- CREATE FUNCTION "ekle_eser_turu( int4,  text )" -------------
+CREATE OR REPLACE FUNCTION "MuzeYonetimi".ekle_eser_turu(tur_no integer, tur_adi text)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  -- Yeni eser türünü ekleyin
+  INSERT INTO "MuzeYonetimi"."EserTurleri" (
+    "Tur_no","Tur_adi"
+  ) VALUES (
+    tur_no,
+    tur_adi
+  );
+END;
+$function$;
+-- -------------------------------------------------------------
+
+-- CREATE FUNCTION "ekle_sanat_eseri( varchar,  varchar,  varchar,  varchar,  date )" 
+CREATE OR REPLACE FUNCTION "MuzeYonetimi".ekle_sanat_eseri(eser_adi character varying, eser_boyutlari character varying, eser_durum character varying, eser_malzemesi character varying, eser_olusturma_tarihi date)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  INSERT INTO "MuzeYonetimi"."SanatEserleri" (
+    "Eser_adi",
+    "Eser_boyutlari",
+    "Eser_durum",
+    "Eser_malzemesi",
+    "Eser_olusturma_tarihi"
+
+  ) VALUES (
+    eser_adi,
+    eser_boyutlari,
+    eser_durum,
+    eser_malzemesi,
+    eser_olusturma_tarihi
+  
+  );
+END;
+$function$;
+-- -------------------------------------------------------------
+
+-- CREATE FUNCTION "sil_bilet( int4 )" -------------------------
+CREATE OR REPLACE FUNCTION "MuzeYonetimi".sil_bilet(bilet_no integer)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  -- Silme işlemini gerçekleştir
+  DELETE FROM "MuzeYonetimi"."Bilet" WHERE "Bilet_no" = bilet_no;
+END;
+$function$;
+-- -------------------------------------------------------------
