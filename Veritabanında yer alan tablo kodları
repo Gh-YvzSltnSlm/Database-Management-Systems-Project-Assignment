@@ -1,0 +1,211 @@
+-- CREATE TABLE "Bilet" ----------------------------------------
+CREATE TABLE "MuzeYonetimi"."Bilet" ( 
+	"Bilet_no" Integer NOT NULL,
+	"Bilet_turu" Character( 250 ) NOT NULL,
+	"Bilet_ucreti" Numeric NOT NULL,
+	PRIMARY KEY ( "Bilet_no" ) );
+ ;
+-- -------------------------------------------------------------
+
+
+-- CREATE TABLE "Calisan" --------------------------------------
+CREATE TABLE "MuzeYonetimi"."Calisan" ( 
+	"pk_fk_Personel_kimlik" Character Varying( 11 ) NOT NULL,
+	PRIMARY KEY ( "pk_fk_Personel_kimlik" ) );
+ ;
+-- -------------------------------------------------------------
+
+
+-- CREATE TABLE "EserTurleri" ----------------------------------
+CREATE TABLE "MuzeYonetimi"."EserTurleri" ( 
+	"Tur_no" Integer NOT NULL,
+	"Tur_adi" Text NOT NULL,
+	"fk_Eser_ıd" Integer,
+	PRIMARY KEY ( "Tur_no" ) );
+ ;
+-- -------------------------------------------------------------
+
+
+-- CREATE TABLE "Muze_Bolumu" ----------------------------------
+CREATE TABLE "MuzeYonetimi"."Muze_Bolumu" ( 
+	"Bolum_no" Integer NOT NULL,
+	"Sergi_no" Integer NOT NULL,
+	"Personel_bilgisi" Text NOT NULL,
+	"Ziyaretci_bilgisi" Text NOT NULL,
+	"acilis_kapanis_saati" Text NOT NULL,
+	PRIMARY KEY ( "Bolum_no" ),
+	CONSTRAINT "unique_Muze_Bolumu_Bolum_no" UNIQUE( "Bolum_no" ),
+	CONSTRAINT "unique_Muze_Bolumu_Sergi_no" UNIQUE( "Sergi_no" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "MuzeBolumu_Personel" --------------------------
+CREATE TABLE "MuzeYonetimi"."MuzeBolumu_Personel" ( 
+	"MBP_id" Character Varying NOT NULL,
+	"fk_Personel_kimlik" Character Varying( 11 ) NOT NULL,
+	"fk_Bolum_no" Integer NOT NULL,
+	PRIMARY KEY ( "MBP_id" ) );
+ ;
+-- -------------------------------------------------------------
+
+
+-- CREATE TABLE "PersnelSergi" ---------------------------------
+CREATE TABLE "MuzeYonetimi"."PersnelSergi" ( 
+	"PS_id" Integer NOT NULL,
+	"pk_fk_Personel_kimlik" Character Varying NOT NULL,
+	"pk_fk_Sergi_no" Integer NOT NULL,
+	PRIMARY KEY ( "PS_id" ),
+	CONSTRAINT "unique_PersnelSergi_PS_id" UNIQUE( "PS_id" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Personel" -------------------------------------
+CREATE TABLE "MuzeYonetimi"."Personel" ( 
+	"Personel_kimlik" Character Varying( 11 ) NOT NULL,
+	"Personel_adi" Text NOT NULL,
+	"Personel_soyadi" Text NOT NULL,
+	"Personel_TelNo" Integer NOT NULL,
+	"Personel_pozisyon" Text NOT NULL,
+	"Personel_maas" Integer NOT NULL,
+	"Personel_egitim_duzeyi" Text NOT NULL,
+	"Personel_resmi" Text NOT NULL,
+	PRIMARY KEY ( "Personel_kimlik" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "PersonelZiyaret" ------------------------------
+CREATE TABLE "MuzeYonetimi"."PersonelZiyaret" ( 
+	"PZ_id" Integer NOT NULL,
+	"Personel_kimlik" Character Varying NOT NULL,
+	"Ziyaret_no" Integer NOT NULL,
+	PRIMARY KEY ( "PZ_id" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Sanatci" --------------------------------------
+CREATE TABLE "MuzeYonetimi"."Sanatci" ( 
+	"Sanatci_kimlik" Character Varying( 11 ) NOT NULL,
+	"Sanatci_adi" Character Varying( 250 ) NOT NULL,
+	"Sanatci_soyadi" Character Varying( 250 ) NOT NULL,
+	"Dogum_tarihi" Date NOT NULL,
+	"Olum_tarihi" Date NOT NULL,
+	"Oduller" Text NOT NULL,
+	"Branslar" Text NOT NULL,
+	"Sanatci_resmi" Text NOT NULL,
+	"fk_Eser_ıd" Character Varying NOT NULL,
+	PRIMARY KEY ( "Sanatci_kimlik" ),
+	CONSTRAINT "unique_Sanatci_Sanatci_kimlik" UNIQUE( "Sanatci_kimlik" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "SanatEserleri" --------------------------------
+CREATE TABLE "MuzeYonetimi"."SanatEserleri" ( 
+	"Eser_ıd" Integer NOT NULL,
+	"Eser_adi" Character Varying( 250 ) NOT NULL,
+	"Eser_malzemesi" Character Varying( 250 ) NOT NULL,
+	"Eser_durum" Character Varying( 250 ) NOT NULL,
+	"Eser_olusturma_tarihi" Date NOT NULL,
+	"Eser_boyutlari" Numeric NOT NULL,
+	"fk_Bolum_no" Integer,
+	"fk_Sanatci_kimlik" Character Varying( 11 ),
+	"fk_Tur_no" Integer,
+	PRIMARY KEY ( "Eser_ıd" ),
+	CONSTRAINT "unique_SanatEserleri_Bolum_no" UNIQUE( "fk_Bolum_no" ),
+	CONSTRAINT "unique_SanatEserleri_fk_Sanatci_kimlik" UNIQUE( "fk_Sanatci_kimlik" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "SanatEserleri_EserTurleri" --------------------
+CREATE TABLE "MuzeYonetimi"."SanatEserleri_EserTurleri" ( 
+	"SE_ET_id" Integer NOT NULL,
+	"pk_fk_Eser_id" Integer NOT NULL,
+	"pk_fk_Tur_no" Integer NOT NULL,
+	PRIMARY KEY ( "SE_ET_id" ),
+	CONSTRAINT "unique_SanatEserleri_EserTurleri_SE_ET_id" UNIQUE( "SE_ET_id" ),
+	CONSTRAINT "unique_SanatEserleri_EserTurleri_pk_fk_Eser_id" UNIQUE( "pk_fk_Eser_id" ),
+	CONSTRAINT "unique_SanatEserleri_EserTurleri_pk_fk_Tur_no" UNIQUE( "pk_fk_Tur_no" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Sergi_SanatEserleri" --------------------------
+CREATE TABLE "MuzeYonetimi"."Sergi_SanatEserleri" ( 
+	"SSE_id" Integer NOT NULL,
+	"fk_Eser_no" Integer NOT NULL,
+	"fk_Sergi_no" Integer NOT NULL,
+	PRIMARY KEY ( "SSE_id" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Sergiler" -------------------------------------
+CREATE TABLE "MuzeYonetimi"."Sergiler" ( 
+	"Sergi_no" Integer NOT NULL,
+	"Sergi_adi" Text NOT NULL,
+	"Sergi_tarihi" Date NOT NULL,
+	"Ziyaretci_bilgisi" Text NOT NULL,
+	"acilis_kapanis_saati" Time With Time Zone NOT NULL,
+	"fk_Bolum_No" Integer NOT NULL,
+	PRIMARY KEY ( "Sergi_no" ),
+	CONSTRAINT "unique_Sergiler_Sergi_no" UNIQUE( "Sergi_no" ),
+	CONSTRAINT "unique_Sergiler_fk_Bolum_No" UNIQUE( "fk_Bolum_No" ) );
+ ;
+-- -------------------------------------------------------------
+
+
+-- CREATE TABLE "Sergiler_Ziyaret" -----------------------------
+CREATE TABLE "MuzeYonetimi"."Sergiler_Ziyaret" ( 
+	"SZ_id" Integer NOT NULL,
+	"pk_fk_Sergi_no" Integer NOT NULL,
+	"pk_fK_Ziyaret_no" Integer NOT NULL,
+	PRIMARY KEY ( "SZ_id" ),
+	CONSTRAINT "unique_Sergiler_Ziyaret_SZ_id" UNIQUE( "SZ_id" ),
+	CONSTRAINT "unique_Sergiler_Ziyaret_pk_fk_Sergi_no" UNIQUE( "pk_fk_Sergi_no" ),
+	CONSTRAINT "unique_Sergiler_Ziyaret_pk_fK_Ziyaret_no" UNIQUE( "pk_fK_Ziyaret_no" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Temizlikci" -----------------------------------
+CREATE TABLE "MuzeYonetimi"."Temizlikci" ( 
+	"pk_fk_temizlikci_kimlik" Character Varying( 11 ) NOT NULL,
+	PRIMARY KEY ( "pk_fk_temizlikci_kimlik" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Yonetici" -------------------------------------
+CREATE TABLE "MuzeYonetimi"."Yonetici" ( 
+	"pk_fk_Personel_kimlik" Character Varying( 11 ) NOT NULL,
+	PRIMARY KEY ( "pk_fk_Personel_kimlik" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Ziyaret" --------------------------------------
+CREATE TABLE "MuzeYonetimi"."Ziyaret" ( 
+	"Ziyaret_no" Text NOT NULL,
+	"Ziyaret_tarihi" Date NOT NULL,
+	"Ziyaret_saati" Time With Time Zone NOT NULL,
+	PRIMARY KEY ( "Ziyaret_no" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "Ziyaretci" ------------------------------------
+CREATE TABLE "MuzeYonetimi"."Ziyaretci" ( 
+	"Ziyaretci_kimlik" Character Varying( 11 ) NOT NULL,
+	"Ziyaretci_adi" Character Varying( 250 ) NOT NULL,
+	"Ziyaretci_soyadi" Character Varying( 250 ) NOT NULL,
+	"Ziyaretci_TelNo" Character( 250 ) NOT NULL,
+	"Ziyaretci_turu" Text NOT NULL,
+	"Ziyaretci_ucreti" Numeric NOT NULL,
+	"fk_Bilet_no" Text NOT NULL,
+	PRIMARY KEY ( "Ziyaretci_kimlik" ) );
+ ;
+-- -------------------------------------------------------------
+
+-- CREATE TABLE "ZiyaretZiyaretci" -----------------------------
+CREATE TABLE "MuzeYonetimi"."ZiyaretZiyaretci" ( 
+	"ZZ_id" Integer NOT NULL,
+	"Ziyaretci_kimlik" Character Varying( 11 ) NOT NULL,
+	"Ziyaret_no" Text NOT NULL,
+	PRIMARY KEY ( "ZZ_id" ),
+	CONSTRAINT "unique_ZiyaretZiyaretci_ZZ_id" UNIQUE( "ZZ_id" ) );
+ ;
+-- -------------------------------------------------------------
+
