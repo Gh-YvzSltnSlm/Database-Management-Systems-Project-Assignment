@@ -1,0 +1,317 @@
+//FORM1.CS ANASAYFA DOSYASI-----------------------------------------------------------------------
+
+using Npgsql;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+
+
+
+namespace MuzeEnvanterYonetimii
+{
+    public partial class Form1 : Form
+    {
+
+
+        NpgsqlConnection connection = new NpgsqlConnection("server=localhost; port=5432;  Database=MuzeEnvanterYonetimi; user ID=postgres;SearchPath=MuzeYonetimi; password=postgresql923");
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2();
+            form2.Show();
+            this.Hide();
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form4 form4 = new Form4();
+            form4.Show();
+            this.Hide();
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3();
+            form3.Show();
+            this.Hide();
+
+        }
+    }
+}
+//-----------------------------------------------------------------------------------------------------
+
+
+
+//FORM2.CS ZİYARETÇİ BİLGİLERİNİN ALINDIĞI VE GÜNCEL HALİNİN GÖSTERİLDİĞİ FORM SAYFASI---------------------------------------------------------------------------------
+
+
+using System;
+using Npgsql;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+
+namespace MuzeEnvanterYonetimii
+{
+    public partial class Form2 : Form
+    {
+
+        public Form2()
+        {
+            InitializeComponent();
+        }
+        // Veritabanına bağlantı bilgileri (ConnectionString) - Bu bilgileri kendi veritabanınıza göre güncelleyin
+        string connectionString = ("server=localhost; port=5432;  Database=MuzeEnvanterYonetimi; user ID=postgres;SearchPath=MuzeYonetimi; password=postgresql923");
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnKaydet_Click(object sender, EventArgs e)
+        {
+
+
+        }
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            // Ziyaretçi bilgilerini al
+            string Ziyaretci_kimlik = textBox1.Text;
+            string Ziyaretci_adi = textBox2.Text;
+            string Ziyaretci_soyadi = textBox4.Text;
+            string Ziyaretci_TelNo = textBox5.Text;
+            string Ziyaretci_turu = textBox3.Text;
+            string Ziyaretci_ucreti = textBox6.Text;
+            string fk_Bilet_no = textBox7.Text; 
+         
+
+            if (!decimal.TryParse(textBox6.Text, out decimal ziyaretciUcreti))
+            {
+                MessageBox.Show("Ziyaretçi ücreti sayısal bir değer olmalıdır.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            connection.Open();
+
+            // SQL komutu - Ziyaretci tablosuna INSERT işlemi
+            string sql = "INSERT INTO \"MuzeYonetimi\".\"Ziyaretci\" (\"Ziyaretci_kimlik\", \"Ziyaretci_adi\", \"Ziyaretci_soyadi\", \"Ziyaretci_TelNo\", \"Ziyaretci_turu\", \"Ziyaretci_ucreti\", \"fk_Bilet_no\") VALUES (@Ziyaretci_kimlik, @Ziyaretci_adi, @Ziyaretci_soyadi, @Ziyaretci_TelNo, @Ziyaretci_turu, @Ziyaretci_ucreti::numeric, @fk_Bilet_no)";
+            
+            
+            NpgsqlCommand command = new(sql, connection);
+
+
+            // Parametreleri ekleyin
+            command.Parameters.AddWithValue("@Ziyaretci_kimlik", Ziyaretci_kimlik);
+            command.Parameters.AddWithValue("@Ziyaretci_adi", Ziyaretci_adi);
+            command.Parameters.AddWithValue("@Ziyaretci_soyadi", Ziyaretci_soyadi);
+            command.Parameters.AddWithValue("@Ziyaretci_TelNo", Ziyaretci_TelNo);
+            command.Parameters.AddWithValue("@Ziyaretci_turu", Ziyaretci_turu);
+            command.Parameters.AddWithValue("@Ziyaretci_ucreti", Ziyaretci_ucreti);
+            command.Parameters.AddWithValue("@fk_Bilet_no", fk_Bilet_no);
+
+
+            // Komutu çalıştırın
+            command.ExecuteNonQuery();
+
+
+
+            string query = "SELECT * FROM \"MuzeYonetimi\".\"Ziyaretci\"";
+            NpgsqlDataAdapter da = new NpgsqlDataAdapter(query, connection);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            dataGridView1.DataSource = ds.Tables[0];
+
+            // Her durumda bağlantıyı kapatın
+            connection.Close();
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form1 form1 = new Form1();
+            form1.Show();
+            this.Hide();
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//FORM3 MÜZEYE YAPILAN ZİYARETLERİ GÖSTEREN FORM SAYFASI -------------------------------------------------------------------------------------------------------
+
+using Npgsql;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace MuzeEnvanterYonetimii
+{
+    public partial class Form3 : Form
+    {
+        string connectionString = ("server=localhost; port=5432;  Database=MuzeEnvanterYonetimi; user ID=postgres;SearchPath=MuzeYonetimi; password=postgresql923");
+
+        public Form3()
+        {
+            InitializeComponent();
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            connection.Open();
+
+            string query = "SELECT * FROM \"MuzeYonetimi\".\"Ziyaret\"";
+            NpgsqlDataAdapter da = new NpgsqlDataAdapter(query, connection);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            dataGridView2.DataSource = ds.Tables[0];
+
+            connection.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form1 form1 = new Form1();
+            form1.Show();
+            this.Hide();
+
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+//FORM4 ENVANTERE EKLENEN SANAT ESERLERİNİN GÖSTERİLDİĞİ FORM SAYFASI ------------------------------------------------------------------------------------------
+
+using Npgsql;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace MuzeEnvanterYonetimii
+{
+    public partial class Form4 : Form
+    {
+
+        string connectionString = ("server=localhost; port=5432;  Database=MuzeEnvanterYonetimi; user ID=postgres;SearchPath=MuzeYonetimi; password=postgresql923");
+
+
+        public Form4()
+        {
+            InitializeComponent();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+Form1 form1 = new Form1();
+            form1.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
+            connection.Open();
+
+            string query = "SELECT * FROM \"MuzeYonetimi\".\"SanatEserleri\"";
+            NpgsqlDataAdapter da = new NpgsqlDataAdapter(query, connection);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            dataGridView3.DataSource = ds.Tables[0];
+
+            connection.Close();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            
+
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
