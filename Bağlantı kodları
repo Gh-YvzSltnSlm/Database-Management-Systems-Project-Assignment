@@ -1,0 +1,132 @@
+-- CREATE LINK "MuzeBolumu_MuzeBolumuPersonel" -----------------
+ALTER TABLE "MuzeYonetimi"."MuzeBolumu_Personel"
+	ADD CONSTRAINT "MuzeBolumu_MuzeBolumuPersonel" FOREIGN KEY ( "fk_Bolum_no" )
+	REFERENCES "MuzeYonetimi"."Muze_Bolumu" ( "Bolum_no" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "MuzeBolumu_SanatEserleri" ----------------------
+ALTER TABLE "MuzeYonetimi"."SanatEserleri"
+	ADD CONSTRAINT "MuzeBolumu_SanatEserleri" FOREIGN KEY ( "fk_Bolum_no" )
+	REFERENCES "MuzeYonetimi"."Muze_Bolumu" ( "Bolum_no" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "MuzeBolumu_Sergiler_link" ----------------------
+ALTER TABLE "MuzeYonetimi"."Sergiler"
+	ADD CONSTRAINT "MuzeBolumu_Sergiler_link" FOREIGN KEY ( "fk_Bolum_No" )
+	REFERENCES "MuzeYonetimi"."Muze_Bolumu" ( "Bolum_no" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Personel_Calisan_link" -------------------------
+ALTER TABLE "MuzeYonetimi"."Calisan"
+	ADD CONSTRAINT "Personel_Calisan_link" FOREIGN KEY ( "pk_fk_Personel_kimlik" )
+	REFERENCES "MuzeYonetimi"."Personel" ( "Personel_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Personel_MuzeBolumu_Personel" ------------------
+ALTER TABLE "MuzeYonetimi"."MuzeBolumu_Personel"
+	ADD CONSTRAINT "Personel_MuzeBolumu_Personel" FOREIGN KEY ( "fk_Personel_kimlik" )
+	REFERENCES "MuzeYonetimi"."Personel" ( "Personel_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Personel_Personel_Sergi" -----------------------
+ALTER TABLE "MuzeYonetimi"."PersnelSergi"
+	ADD CONSTRAINT "Personel_Personel_Sergi" FOREIGN KEY ( "pk_fk_Personel_kimlik" )
+	REFERENCES "MuzeYonetimi"."Personel" ( "Personel_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Personel_PersonelZiyaret" ----------------------
+ALTER TABLE "MuzeYonetimi"."PersonelZiyaret"
+	ADD CONSTRAINT "Personel_PersonelZiyaret" FOREIGN KEY ( "Personel_kimlik" )
+	REFERENCES "MuzeYonetimi"."Personel" ( "Personel_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Personel_Temizlikci" ---------------------------
+ALTER TABLE "MuzeYonetimi"."Temizlikci"
+	ADD CONSTRAINT "Personel_Temizlikci" FOREIGN KEY ( "pk_fk_temizlikci_kimlik" )
+	REFERENCES "MuzeYonetimi"."Personel" ( "Personel_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Personel_Yonetici" -----------------------------
+ALTER TABLE "MuzeYonetimi"."Yonetici"
+	ADD CONSTRAINT "Personel_Yonetici" FOREIGN KEY ( "pk_fk_Personel_kimlik" )
+	REFERENCES "MuzeYonetimi"."Personel" ( "Personel_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+
+-- CREATE LINK "SanatEserleri_EserTurleri_link" ----------------
+ALTER TABLE "MuzeYonetimi"."EserTurleri"
+	ADD CONSTRAINT "SanatEserleri_EserTurleri_link" FOREIGN KEY ( "fk_Eser_ıd" )
+	REFERENCES "MuzeYonetimi"."SanatEserleri" ( "Eser_ıd" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+
+-- CREATE LINK "SanatEserleri_Seri_SanatEserleri_link" ---------
+ALTER TABLE "MuzeYonetimi"."Sergi_SanatEserleri"
+	ADD CONSTRAINT "SanatEserleri_Seri_SanatEserleri_link" FOREIGN KEY ( "fk_Eser_no" )
+	REFERENCES "MuzeYonetimi"."SanatEserleri" ( "Eser_ıd" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+
+-- CREATE LINK "Sergiler_SergilerZiyaret_link" -----------------
+ALTER TABLE "MuzeYonetimi"."Sergiler_Ziyaret"
+	ADD CONSTRAINT "Sergiler_SergilerZiyaret_link" FOREIGN KEY ( "pk_fk_Sergi_no" )
+	REFERENCES "MuzeYonetimi"."Sergiler" ( "Sergi_no" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Sergiler_SergiSanatEserleri" -------------------
+ALTER TABLE "MuzeYonetimi"."Sergi_SanatEserleri"
+	ADD CONSTRAINT "Sergiler_SergiSanatEserleri" FOREIGN KEY ( "fk_Sergi_no" )
+	REFERENCES "MuzeYonetimi"."Sergiler" ( "Sergi_no" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "SSanatci_SanatEsrleri" -------------------------
+ALTER TABLE "MuzeYonetimi"."SanatEserleri"
+	ADD CONSTRAINT "SSanatci_SanatEsrleri" FOREIGN KEY ( "fk_Sanatci_kimlik" )
+	REFERENCES "MuzeYonetimi"."Sanatci" ( "Sanatci_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+
+-- CREATE LINK "Ziyaret_ZiyaretZiyaretci_link" -----------------
+ALTER TABLE "MuzeYonetimi"."ZiyaretZiyaretci"
+	ADD CONSTRAINT "Ziyaret_ZiyaretZiyaretci_link" FOREIGN KEY ( "Ziyaret_no" )
+	REFERENCES "MuzeYonetimi"."Ziyaret" ( "Ziyaret_no" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
+-- CREATE LINK "Ziyaretci_ZiyaretZiyaretci_link" ---------------
+ALTER TABLE "MuzeYonetimi"."ZiyaretZiyaretci"
+	ADD CONSTRAINT "Ziyaretci_ZiyaretZiyaretci_link" FOREIGN KEY ( "Ziyaretci_kimlik" )
+	REFERENCES "MuzeYonetimi"."Ziyaretci" ( "Ziyaretci_kimlik" ) MATCH FULL
+	ON DELETE Cascade
+	ON UPDATE Cascade;
+-- -------------------------------------------------------------
+
